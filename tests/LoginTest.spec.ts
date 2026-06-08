@@ -25,7 +25,7 @@ test("Verify Login Functionality", async({page})=>{
 
 //radio button actions
 
-test.only("Radio Button Actions", async({page})=>{
+test("Radio Button Actions", async({page})=>{
     await page.goto("https://testautomationpractice.blogspot.com/");
     const maleRadio = page.locator('#male');
     await expect(maleRadio).toBeVisible();
@@ -34,3 +34,4 @@ test.only("Radio Button Actions", async({page})=>{
     await maleRadio.check();
     await expect(maleRadio).toBeChecked();
 });
+
