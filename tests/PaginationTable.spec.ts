@@ -38,7 +38,7 @@ test("Filter the rows and check the row count", async({page})=>{
     expect(rows.length).toBe(50);
 });
 
-test.only("Verify the serch element present in table", async({page})=>{
+test("Verify the serch element present in table", async({page})=>{
     await page.goto("https://datatables.net/");
     const searchBox:Locator = page.getByLabel('Search:');
     await expect(searchBox).toBeVisible();
@@ -67,10 +67,4 @@ test.only("Verify the serch element present in table", async({page})=>{
     {
         console.log("No match found for search element");
     }
-
-
-
-
-
-
 });
