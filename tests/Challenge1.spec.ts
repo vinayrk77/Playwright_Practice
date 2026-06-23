@@ -53,6 +53,68 @@ test("Verify orange hrm", async({page})=>{
     await page.locator("div[role = 'listbox'] span", {hasText: 'Full-Time Probation'}).click();
 
     //Check whether options are sorted.
-    const originalList = 
+    const originalList = [...optionText];
+    const sortedList = [...optionText].sort();
 
+    console.log("Original list is:",originalList);
+    console.log("Sorted list is:",sortedList);
+
+    if(JSON.stringify(originalList)=== JSON.stringify(sortedList))
+    {
+        console.log("Options are sorted");
+    }
+    else
+    {
+        console.log("Options are not sorted");
+    }
+
+    //leaves
+    const dashboard = page.locator('.oxd-topbar-header i').nth(0);
+    await dashboard.click();
+    const leaves = page.getByRole('link', {name: 'Leave'});
+    await leaves.click();
+    const year:string = '2026';
+    const date:string = '31';
+    const month = 'December';
+
+    const fromDate = page.getByPlaceholder("yyyy-dd-mm").nth(0);
+    await fromDate.click();
+
+    const currentMonth = page.locator('oxd-calendar-selector-month-selected');
+    const currentMonthText = await currentMonth.innerText();
+
+    const currentYear = page.locator('oxd-calendar-selector-year-selected');
+    const currentYearText = await currentYear.innerText();
+
+    while(true)
+    {
+        if(currentMonthText === month  && currentYearText ===year)
+        {
+            break;
+        }
+        else
+        {
+            await page.locator('i.bi-chevron-right').click();
+        }
+    }
+
+    //date 
+    const alldates = await page.locator('div.oxd-calendar-date-wrapper').all();
+
+    for(let dt of alldates)
+    {
+        const dateText = await dt.innerText();
+        if(dateText === date)
+        {
+            await dt.click();
+            break;
+        }
+    }
+    const expectedDate = '2026-31-12';
+    await expect(leaves).toHaveValue(expectedDate);
+
+    //checkbox
+    await page.locator('.oxd-topbar-header i').nth(0).click();
+    const admin = page.getByRole('link', {name: 'Admin'});
+    await admin.click();
 })
