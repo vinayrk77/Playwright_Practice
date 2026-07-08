@@ -15,13 +15,37 @@ test('Student Registration', async({})=>{
     await page.locator('button[data-testid="form-submit"]').click();
     await expect(page.locator('p[data-testid="form-result"]')).toContainText('Form submitted successfully');
     
-    //Select Male (or the appropriate gender option if present).
-    
-    //Select exactly two hobbies using checkboxes.
+    //Select checkbox.
+    const optionA = page.locator('input[data-testid="check-a"]');
+    await optionA.check();
+    await expect(optionA).toBeChecked();
+    const optionB = page.locator('input[data-testid="check-b"]');
+    await optionB.check();
+    await expect(optionB).toBeChecked();
+    //Select radio.
+    const radio1 = page.locator('#radio-1');
+    await radio1.check();
+    await expect(radio1).toBeChecked();
+    await expect(page.locator('p[data-testid="radio-result"]')).toContainText(['Selected:','one']);
     //Select a value from the dropdown.
-    //Click the Submit button.
-    //Verify that a success message (or confirmation text) is displayed.
-    //Take a screenshot after successful submission.
+    const dropdown1 = page.locator('#standard-select');
+    await dropdown1.selectOption('green');
+    await expect(dropdown1).toHaveValue('green');
+    //Multiselect
+    const multidropdown = page.locator('#multi-select');
+    await multidropdown.selectOption(['java', 'python', 'javascript']);
+    await expect(multidropdown).toHaveValues(['java', 'python', 'javascript']);
+    //custom
+    await page.locator('#custom-dropdown-toggle').click();
+    const customdropdown = page.locator('li[data-testid="custom-option-beta"]');
+    await customdropdown.click();
+    await expect(page.getByTestId('custom-dropdown-result')).toContainText(['Selected:', 'Beta']);
+    //dynamic
+    const dynamicdropdown = page.getByTestId('dynamic-select');
+    await dynamicdropdown.selectOption('Playwright');
+    await expect(dynamicdropdown).toHaveValue('Playwright');
+    await expect(page.getByTestId('dynamic-select-result')).toContainText(['Selected:', 'Playwright']);
+   
 
 
 
