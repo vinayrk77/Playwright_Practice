@@ -45,12 +45,42 @@ test('Student Registration', async({})=>{
     await dynamicdropdown.selectOption('Playwright');
     await expect(dynamicdropdown).toHaveValue('Playwright');
     await expect(page.getByTestId('dynamic-select-result')).toContainText(['Selected:', 'Playwright']);
-   
-
-
-
-
-
-
-
 });
+
+test.only("Verify alert popup", async({page})=>{
+    await page.goto('https://www.sreenidhirajakrishnan.com/practice#section-9');
+
+    page.once('dialog', async dialog =>{
+        console.log("Type of dialog is", dialog.type());
+        expect(dialog.type()).toBe('alert');
+        console.log('Text on dialog is:', dialog.message());
+        expect(dialog.message()).toBe('This is a practice alert');
+        await dialog.accept();
+    });
+    await page.locator('button#alert-btn').click();
+    await expect(page.locator('p[data-testid="alert-result"]')).toContainText('Alert was shown and dismissed');
+
+    page.once('dialog', async dialog =>{
+        console.log("dialog type is", dialog.type());
+        expect(dialog.type()).toBe('confirm');
+        console.log('Text on dialog is:', dialog.message());
+        expect(dialog.message()).toBe('Do you confirm this action?');
+        await dialog.dismiss();
+    });
+    await page.locator('button#confirm-btn').click();
+    await expect(page.locator('p[data-testid="alert-result"]')).toContainText('Confirm result: Cancel');
+
+    page.once('dialog', async dialog =>{
+        console.log("Tye of dialog is:", dialog.type());
+        expect(dialog.type()).toBe('prompt');
+        console.log('Text on dialog is:', dialog.message());
+        expect(dialog.message()).toBe('Enter a value:');
+        await dialog.accept('Hi Vinay');
+    });
+    await page.locator('button#prompt-btn').click();
+    await expect(page.locator('p[data-testid="alert-result"]')).toContainText('Prompt value: Hi Vinay');
+});
+
+
+
+
