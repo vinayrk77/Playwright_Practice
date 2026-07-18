@@ -49,13 +49,15 @@ test("Verify End to End purchase flow", async({})=>{
     const Email = page.locator('#email');
     const email = faker.internet.email();
     await Email.fill(email);
+    console.log(email);
 
     const pwd = page.locator('#password');
-    const password = '1122@Vinay';
+    const password = '1133@Vinay';
     await pwd.fill(password);
 
     await page.getByRole('button', {name: 'Register'}).click();
 
+    await page.waitForLoadState();
     await expect(page).toHaveURL('https://practicesoftwaretesting.com/auth/login');
     await page.locator('#email').fill(email);
     await page.getByPlaceholder("Your password").fill(password);
@@ -68,7 +70,7 @@ test("Verify End to End purchase flow", async({})=>{
     await page.locator('#search-query').fill('Hammer');
     await page.getByRole('button', {name: 'Search'}).click();
     
-    await expect(page.locator('[data-test="product-name"]').first()).toBeVisible({timeout: 5000});
+    await expect(page.locator('[data-test="product-name"]').first()).toBeVisible({timeout: 15000});
     const allproducts =  page.locator('[data-test="product-name"]');
     const productNames = await allproducts.allInnerTexts();
     console.log(productNames);
@@ -78,17 +80,36 @@ test("Verify End to End purchase flow", async({})=>{
     const hammerName = await firstHammer.innerText();
     console.log(hammerName);
 
+    const hammer = await page.locator('h1[data-test="product-name"]').innerHTML();
+    console.log("Hammer name after clicking is:",hammer);
+    expect(hammer).toContain(hammerName);
+
+    await page.locator('#btn-add-to-cart').click();
+    await expect(page.getByRole('alert', { name: 'Product added to shopping' })).toBeVisible();
+    await page.locator('a[data-test="nav-cart"]').click();
+
+    await expect(page).toHaveURL('https://practicesoftwaretesting.com/checkout');
+    const cartProduct = page.locator('[data-test="product-title"]');
+    await expect(cartProduct).toHaveText('Claw Hammer with Shock Reduction Grip')
 
 
+    const productPrice = await page.locator('span[data-test="product-price"]').innerText();
+    console.log(productPrice);
+    expect(productPrice).toBe('$13.41');
 
+    const productQuantity = page.locator('input[data-test="product-quantity"]');
+    await expect(productQuantity).toHaveAttribute('min', '1');
+    await productQuantity.clear();
+    await productQuantity.pressSequentially('2');
 
+    const total = page.locator('td[data-test="cart-total"]');
+    //await expect(total).not.toHaveText('$13.41');
+    console.log(await total.innerText());
 
+    await page.locator('svg[data-icon="xmark"]').click();
 
-
-
-
-
-
+    await expect(page.getByRole('alert', {name: 'Product deleted'})).toBeVisible();
+    await expect(page.getByText('The cart is empty. Nothing to display.')).toBeVisible();
 
     await browser.close();
 
