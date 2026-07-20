@@ -1,0 +1,18 @@
+{
+  "id": 13,
+  "category": {
+    "id": 13,
+    "name": "Noni"
+  },
+  "name": "Noni",
+  "photoUrls": [
+    "string"
+  ],
+  "tags": [
+    {
+      "id": 13,
+      "name": "Noni"
+    }
+  ],
+  "status": "available"
+}

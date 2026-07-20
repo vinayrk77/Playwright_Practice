@@ -1,25 +1,11 @@
-import { test, expect } from "@playwright/test";
+import {test, expect} from "@playwright/test";
+import fs from "fs"
 
-test("Create post request using static body", async ({ request }) => {
+test("Create a post request using JSON File body", async({request})=>{
 
-    const requestBody = {
-        "id": 12,
-        "category": {
-            "id": 12,
-            "name": "Rocky"
-        },
-        "name": "Rocky",
-        "photoUrls": [
-            "string"
-        ],
-        "tags": [
-            {
-                "id": 12,
-                "name": "Rocky"
-            }
-        ],
-        "status": "available"
-    }
+    //read from json
+    const jsonPath = "TestData/petRequest.json"
+    const requestBody:any = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
 
     const response = await request.post("https://petstore.swagger.io/v2/pet", {data: requestBody});
 
@@ -37,8 +23,8 @@ test("Create post request using static body", async ({ request }) => {
     expect(responseBody).toHaveProperty('status');
 
     expect(responseBody).toMatchObject({
-    id: 12,
-    name: "Rocky",
-    status: "available"
-});
+    "id": requestBody.id,
+    "name": requestBody.name,
+    "status": requestBody.status
+    });
 });

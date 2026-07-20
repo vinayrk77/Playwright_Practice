@@ -1,28 +1,34 @@
-import { test, expect } from "@playwright/test";
+import {test, expect} from "@playwright/test";
+import {faker} from "@faker-js/faker";
 
-test("Create post request using static body", async ({ request }) => {
+//Using faker library
+test("Create a post request using faker or random data", async({request})=>{
+
+    //data generation
+    const id = faker.number.int({min: 1, max: 100});
+    const name = faker.animal.petName();
+    const status = faker.helpers.arrayElement(["available", "unavailable"]);
 
     const requestBody = {
-        "id": 12,
+        "id": id,
         "category": {
-            "id": 12,
-            "name": "Rocky"
+            "id": id,
+            "name": name
         },
-        "name": "Rocky",
+        "name": name,
         "photoUrls": [
             "string"
         ],
         "tags": [
             {
-                "id": 12,
-                "name": "Rocky"
+                "id": id,
+                "name": name
             }
         ],
-        "status": "available"
+        "status": status
     }
 
     const response = await request.post("https://petstore.swagger.io/v2/pet", {data: requestBody});
-
     const responseBody = await response.json();
     console.log(responseBody);
 
@@ -37,8 +43,12 @@ test("Create post request using static body", async ({ request }) => {
     expect(responseBody).toHaveProperty('status');
 
     expect(responseBody).toMatchObject({
-    id: 12,
-    name: "Rocky",
-    status: "available"
-});
+        "id": requestBody.id,
+        "name": requestBody.name,
+        "status": requestBody.status
+
+    })
+
+
+
 });
