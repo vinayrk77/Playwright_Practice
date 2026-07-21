@@ -47,7 +47,7 @@ test("Create a post request using faker or random data", async({request})=>{
         "name": requestBody.name,
         "status": requestBody.status
 
-    })
+    });
 
 
 
