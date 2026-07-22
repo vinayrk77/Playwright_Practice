@@ -1,0 +1,11 @@
+{
+  "firstname": "Vinay Updated",
+  "lastname": "Karanjavkar",
+  "totalprice": 1800,
+  "depositpaid": false,
+  "bookingdates": {
+    "checkin": "2026-08-10",
+    "checkout": "2026-08-15"
+  },
+  "additionalneeds": "Deep tissue massage"
+}
