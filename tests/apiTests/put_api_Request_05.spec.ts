@@ -41,6 +41,16 @@ test("Creat a booking and update it using Post", async({request})=>{
     console.log(updateResponsebody);
     console.log('Booking details updated successfully');
 
+    //get request
+    const getResponse = await request.get(`https://restful-booker.herokuapp.com/booking/${bookingId}`);
+    const getresponseBody = await getResponse.json();
+    console.log(getresponseBody);
+
+    expect(getResponse.ok()).toBeTruthy();
+    expect(getResponse.status()).toBe(200);
+    expect(getresponseBody).toMatchObject(updateRequestbody);
+    
+
 
 
 });
