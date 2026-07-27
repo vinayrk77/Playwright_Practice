@@ -24,7 +24,7 @@ test("get booking details by ID path parm", async({request})=>{
     expect(typeof responseBody.status).toBe("string");
 });
 
-test.only("get booking details by query params", async({request})=>{
+test("get booking details by query params", async({request})=>{
 
     const petStatus = "available"
     const response = await request.get(`https://petstore.swagger.io/v2/pet/findByStatus?status=${petStatus}`);
