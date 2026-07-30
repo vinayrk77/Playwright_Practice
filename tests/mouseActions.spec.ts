@@ -41,6 +41,4 @@ test.only("Drag and drop", async({page})=>{
     const final = page.locator('#droppable p');
     await expect(final).toHaveText('Dropped!');
     await page.waitForTimeout(5000);
-
-
 });
