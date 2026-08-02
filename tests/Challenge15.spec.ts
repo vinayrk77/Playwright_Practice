@@ -159,6 +159,4 @@ test.only('Verify dynamic table', async({page})=>{
     }
     expect(dueAmt).not.toBe(-1);
     console.log(dueAmt);
-
-    const 
 });
