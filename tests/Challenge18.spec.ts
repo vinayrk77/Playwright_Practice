@@ -29,7 +29,7 @@ test("Verify invalid login", async({page})=>{
 });
 
 //Challenge 2 — Search Product
-test.only("Verify search products results", async({page})=>{
+test("Verify search products results", async({page})=>{
     await pageUrl(page);
     await login(page, 'hasolev609@fivejm.com', 'Test@1234');
     await expect(page.getByRole('heading', {name: 'My Account'})).toBeVisible({timeout:5000});
@@ -39,3 +39,13 @@ test.only("Verify search products results", async({page})=>{
     await expect(page).toHaveURL('https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=45&search=MacBook');
     await expect(page.locator('div#entry_212456')).toHaveText('Search - MacBook');
 });
+
+test.only("search product and add to cart", async({page})=>{
+    pageUrl(page);
+    await login(page, 'hasolev609@fivejm.com', 'Test@1234');
+    await expect(page.getByRole('heading', {name: 'My Account'})).toBeVisible({timeout:5000});
+    await searchProduct(page, 'ipod');
+    await expect(page.getByText(/ipod/i).first()).toBeVisible();
+
+});
+
