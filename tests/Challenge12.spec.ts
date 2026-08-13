@@ -1,5 +1,4 @@
 import {test, expect} from "@playwright/test";
-import { json } from "node:stream/consumers";
 
 test("Verify and assert data tables", async({page})=>{
 
