@@ -17,7 +17,7 @@ test("Start from basics again", async({page})=>{
     await expect(page.getByPlaceholder('Username')).toBeVisible();
 });
 
-test.only("verify login and check first product on page", async({page})=>{
+test("verify login and check first product on page", async({page})=>{
 
     await page.goto('https://www.saucedemo.com/');
     await expect(page).toHaveTitle('Swag Labs');
@@ -47,4 +47,27 @@ test.only("verify login and check first product on page", async({page})=>{
 
     const cartProduct =  page.locator('.inventory_item_name');
     await expect(cartProduct).toHaveText('Sauce Labs Backpack');
+});
+
+test.only("Find a specific product and add it to the cart", async({page})=>{
+
+    await page.goto('https://www.saucedemo.com/');
+    await expect(page).toHaveTitle('Swag Labs');
+    await page.getByPlaceholder('Username').fill('standard_user');
+    await page.getByPlaceholder('Password').fill('secret_sauce');
+    await page.locator('#login-button').click();
+    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
+
+    const item_names = page.locator('.inventory_item_name');
+    const names = await item_names.allInnerTexts();
+    console.log(names);
+
+    const products = item_names.filter({hasText: 'Sauce Labs Fleece Jacket'});
+    const productName = products.locator('.inventory_item_name');
+    const Pname = await productName.innerText()
+    console.log(Pname);
+    const productPrice = products.locator('.inventory_item_price');
+    console.log(productPrice);
+    const cart = products.locator('#add-to-cart-sauce-labs-fleece-jacket');
+    //await cart.click();
 });
