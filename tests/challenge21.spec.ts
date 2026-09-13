@@ -37,7 +37,7 @@ test("Verify and assert table", async ({ page }) => {
     await expect(table).toBeVisible();
 
     const rows = page.locator('table tbody tr');
-    const CierraRow = rows.filter({hasText: 'Cierra'});
+    const CierraRow = rows.filter({ hasText: 'Cierra' });
     console.log(await CierraRow.count());
     console.log(await CierraRow.innerText());
 
@@ -52,7 +52,7 @@ test("Verify and assert table", async ({ page }) => {
     expect(email).toHaveText('cierra@example.com');
 });
 
-test("Verify Alden Cantrell's row.", async({page})=>{
+test("Verify Alden Cantrell's row.", async ({ page }) => {
     await page.goto('https://demoqa.com/webtables');
     await expect(page).toHaveTitle('demosite');
 
@@ -60,8 +60,8 @@ test("Verify Alden Cantrell's row.", async({page})=>{
     await expect(table).toBeVisible();
 
     const rows = table.locator('tr');
-    
-    const aldenRow = rows.filter({hasText: 'Alden'});
+
+    const aldenRow = rows.filter({ hasText: 'Alden' });
     console.log(await aldenRow.count());
     console.log(await aldenRow.innerText());
 
@@ -78,7 +78,7 @@ test("Verify Alden Cantrell's row.", async({page})=>{
 });
 
 
-test("Edit the age of person inside table", async({page})=>{
+test("Edit the age of person inside table", async ({ page }) => {
 
     await page.goto('https://demoqa.com/webtables');
     await expect(page).toHaveTitle('demosite');
@@ -87,7 +87,7 @@ test("Edit the age of person inside table", async({page})=>{
     await expect(table).toBeVisible();
 
     const rows = table.locator('tr');
-    const cierraRow = rows.filter({hasText: 'Cierra'});
+    const cierraRow = rows.filter({ hasText: 'Cierra' });
     console.log(await cierraRow.count());
     console.log(await cierraRow.innerText());
     const cells = cierraRow.locator('td');
@@ -97,7 +97,7 @@ test("Edit the age of person inside table", async({page})=>{
 
     await page.locator('#edit-record-1').click();
     await page.getByPlaceholder("Age").fill('40');
-    await page.getByRole('button', {name: 'Submit'}).click();
+    await page.getByRole('button', { name: 'Submit' }).click();
 
     await expect(cierraRow).toBeVisible();
     const updatedAge = await cells.nth(2).innerText();
@@ -105,24 +105,24 @@ test("Edit the age of person inside table", async({page})=>{
     expect(updatedAge).toBe('40');
 });
 
-test.only("Add products to cart and checkout", async({page})=>{
+test("Add products to cart and checkout", async ({ page }) => {
     await page.goto('https://www.saucedemo.com/');
     await expect(page).toHaveTitle('Swag Labs');
 
-    await page.getByRole('textbox', {name: 'Username'}).fill('standard_user');
-    await page.getByRole('textbox', {name: 'Password'}).fill('secret_sauce');
+    await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
+    await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
     await page.locator('#login-button').click();
 
     await expect(page.locator('.title')).toBeVisible();
 
     const products = page.locator('.inventory_item');
 
-    const bagPack = products.filter({hasText: 'Sauce Labs Backpack'});
-    await bagPack.getByRole('button', {name: 'Add to cart'}).click();
+    const bagPack = products.filter({ hasText: 'Sauce Labs Backpack' });
+    await bagPack.getByRole('button', { name: 'Add to cart' }).click();
     await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
 
-    const jacket = products.filter({hasText: 'Sauce Labs Fleece Jacket'});
-    await jacket.getByRole('button', {name: 'Add to cart'}).click();
+    const jacket = products.filter({ hasText: 'Sauce Labs Fleece Jacket' });
+    await jacket.getByRole('button', { name: 'Add to cart' }).click();
     await expect(page.locator('.shopping_cart_badge')).toHaveText('2');
     await page.locator('[data-test="shopping-cart-link"]').click();
     await expect(page.locator('.title')).toBeVisible();
@@ -133,14 +133,118 @@ test.only("Add products to cart and checkout", async({page})=>{
     await expect(page.locator('.inventory_item_name').first()).toHaveText('Sauce Labs Backpack');
     await expect(page.locator('.inventory_item_name').nth(1)).toHaveText('Sauce Labs Fleece Jacket');
 
-    await page.getByRole('button', {name: 'Checkout'}).click();
+    await page.getByRole('button', { name: 'Checkout' }).click();
     await expect(page.getByText('Checkout: Your Information')).toBeVisible();
 
-    await page.getByRole('textbox', {name: 'First Name'}).fill('Vinay');
-    await page.getByRole('textbox', {name: 'Last Name'}).fill('Kumar');
-    await page.getByRole('textbox', {name: 'Zip/Postal Code'}).fill('421503');
+    await page.getByRole('textbox', { name: 'First Name' }).fill('Vinay');
+    await page.getByRole('textbox', { name: 'Last Name' }).fill('Kumar');
+    await page.getByRole('textbox', { name: 'Zip/Postal Code' }).fill('421503');
 
     await page.locator('[data-test="continue"]').click();
     await expect(page.getByText('Checkout: Overview')).toBeVisible();
+});
+
+test("find the produc name and add to cart", async ({ page }) => {
+
+    await page.goto("https://www.saucedemo.com/");
+    await expect(page).toHaveTitle('Swag Labs');
+
+    await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
+    await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
+    await page.locator('#login-button').click();
+    await expect(page.locator('.title')).toHaveText('Products');
+
+    const productsToAdd = ['Sauce Labs Backpack',
+        'Sauce Labs Fleece Jacket',
+        'Sauce Labs Bolt T-Shirt'];
+
+    for (const productName of productsToAdd) {
+        console.log(productName);
+        const product = page.locator('.inventory_item');
+        const givenProducts = product.filter({ hasText: productName });
+        await givenProducts.getByRole('button', { name: 'Add to cart' }).click();
+    }
+    await expect(page.locator('.shopping_cart_badge')).toHaveText('3');
+    await page.locator('[data-test="shopping-cart-link"]').click();
+    await expect(page.getByText('Your Cart')).toBeVisible();
+
+    const actualProducts = await page.locator('.inventory_item_name').allTextContents();
+    console.log(actualProducts);
+    expect(actualProducts).toEqual(productsToAdd);
+});
+
+async function addProductToCart(page:Page, productName: string):Promise<void>{
+    const product = page.locator('.inventory_item');
+    const searchProducts = product.filter({hasText: productName});
+    await searchProducts.getByRole('button', { name: 'Add to cart' }).click();
+}
+test("Use function to search product and add it to cart", async({page})=>{
+    await page.goto("https://www.saucedemo.com/");
+    await expect(page).toHaveTitle('Swag Labs');
+
+    await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
+    await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
+    await page.locator('#login-button').click();
+    await expect(page.locator('.title')).toHaveText('Products');
+
+    const productsToAdd = ['Sauce Labs Backpack',
+        'Sauce Labs Fleece Jacket',
+        'Sauce Labs Bolt T-Shirt'];
+
+    for(const productName of productsToAdd){
+        await addProductToCart(page, productName);
+    }
+    await expect(page.locator('.shopping_cart_badge')).toHaveText('3');
+    await page.locator('[data-test="shopping-cart-link"]').click();
+    await expect(page.getByText('Your Cart')).toBeVisible();
+
+    const actualProducts = await page.locator('.inventory_item_name').allTextContents();
+    console.log(actualProducts);
+    expect(actualProducts).toEqual(productsToAdd);
+});
+
+test("Verify and print all product names", async({page})=>{
+
+    await page.goto('https://www.saucedemo.com/');
+    await expect(page).toHaveTitle('Swag Labs');
+
+    await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
+    await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
+    await page.locator('#login-button').click();
+    await expect(page.locator('.title')).toHaveText('Products');
+
+    const productNames = await page.locator('.inventory_item_name ').allTextContents();
+    console.log(productNames);
+    const productCount = productNames.length;
+    console.log("Number of products are:", productCount);
+    expect(productCount).toBe(6);
+
+    const firstProduct = productNames[0];
+    console.log(firstProduct);
+    expect(firstProduct).toBe('Sauce Labs Backpack');
+    const lastProduct = productNames[5];
+    console.log(lastProduct);
+    expect(lastProduct).toBe('Test.allTheThings() T-Shirt (Red)');
+});
+
+test.only("Verify dynamic controls", async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/dynamic_controls');
+    await expect(page.getByRole('heading', {name: 'Dynamic Controls'})).toBeVisible();
+
+    const removeButton = page.getByRole('button', {name: 'Remove'});
+    await expect(removeButton).toBeVisible();
+    await removeButton.click();
+    await expect(removeButton).not.toBeVisible();
+    const checkBox= page.locator('#checkbox');
+    await expect(checkBox).not.toBeVisible();
+    await expect(page.locator('#message')).toHaveText("It's gone!");
+
+    const addButton = page.getByRole('button', {name: 'Add'});
+    await expect(addButton).toBeVisible();
+    await addButton.click();
+    await expect(checkBox).toBeVisible();
+    await expect(page.locator('#message')).toHaveText("It's back!");
+    await checkBox.check();
+    await expect(checkBox).toBeChecked();
 });
 
