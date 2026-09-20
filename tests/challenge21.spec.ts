@@ -227,7 +227,7 @@ test("Verify and print all product names", async({page})=>{
     expect(lastProduct).toBe('Test.allTheThings() T-Shirt (Red)');
 });
 
-test.only("Verify dynamic controls", async({page})=>{
+test("Verify dynamic controls", async({page})=>{
     await page.goto('https://the-internet.herokuapp.com/dynamic_controls');
     await expect(page.getByRole('heading', {name: 'Dynamic Controls'})).toBeVisible();
 
@@ -246,5 +246,38 @@ test.only("Verify dynamic controls", async({page})=>{
     await expect(page.locator('#message')).toHaveText("It's back!");
     await checkBox.check();
     await expect(checkBox).toBeChecked();
+});
+
+test("Verify dynamic controls for checkboxes", async({page})=>{
+
+    await page.goto("https://the-internet.herokuapp.com/checkboxes");
+
+    await expect(page.getByRole('heading', {name: 'Checkboxes'})).toBeVisible();
+    const checkboxes = page.getByRole('checkbox');
+    console.log(await checkboxes.count());
+    await expect(checkboxes).toHaveCount(2);
+
+    await expect(checkboxes.nth(0)).not.toBeChecked();
+    await expect(checkboxes.nth(1)).toBeChecked();
+
+    await checkboxes.nth(0).check();
+    await expect(checkboxes.nth(0)).toBeChecked();
+    await checkboxes.nth(1).uncheck();
+    await expect(checkboxes.nth(1)).not.toBeChecked();
+});
+
+test.only("Verify Dropdowns", async({page})=>{
+
+    await page.goto("https://the-internet.herokuapp.com/dropdown");
+    await expect(page.getByRole('heading', {name: 'Dropdown List'})).toBeVisible();
+
+    const dropDown = page.locator('select#dropdown');
+    await expect(dropDown).toBeVisible();
+
+    await dropDown.selectOption('Option 1');
+    await expect(dropDown).toHaveValue('1');
+
+    await dropDown.selectOption('Option 2');
+    await expect(dropDown).toHaveValue('2');
 });
 
