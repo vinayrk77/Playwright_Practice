@@ -184,3 +184,48 @@ switch (month) {
 
 
 // Program 14: Perform basic arithmetic operations based on user input
+let operator: string = '+';
+let a1: number = 100, b1: number = 69;
+switch (operator) {
+    case '+':
+        console.log(`Result: ${a1 + b1}`);
+        break;
+    case '-':
+        console.log(`Result: ${a1 - b1}`);
+        break;
+    case '*':
+        console.log(`Result: ${a1 * b1}`);
+        break;
+    case '/':
+        console.log(`Result: ${a1 / b1}`);
+        break;
+    default:
+        console.log("Invalid Operator");
+}
+
+// Program 15: Print the season based on the month number
+let month2: number = 10;
+switch (month2) {
+    case 12:
+    case 1:
+    case 2:
+        console.log("Winter Season");
+    break;
+    case 3:
+    case 4:
+    case 5:
+        console.log("Spring Season");
+    break;
+    case 6:
+    case 7:
+    case 8:
+        console.log("Summer Season");
+    break;
+    case 9:
+    case 10:
+    case 11:
+        console.log("Autum Season");
+    break;
+    default:
+        console.log("Invalid Season");
+}
