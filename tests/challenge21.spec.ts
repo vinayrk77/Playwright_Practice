@@ -266,7 +266,7 @@ test("Verify dynamic controls for checkboxes", async({page})=>{
     await expect(checkboxes.nth(1)).not.toBeChecked();
 });
 
-test.only("Verify Dropdowns", async({page})=>{
+test("Verify Dropdowns", async({page})=>{
 
     await page.goto("https://the-internet.herokuapp.com/dropdown");
     await expect(page.getByRole('heading', {name: 'Dropdown List'})).toBeVisible();
@@ -279,5 +279,23 @@ test.only("Verify Dropdowns", async({page})=>{
 
     await dropDown.selectOption('Option 2');
     await expect(dropDown).toHaveValue('2');
+});
+
+test.only('verify Product Purchase Flow + Dialog', async({page})=>{
+
+    await page.goto('https://the-internet.herokuapp.com/');
+    await expect(page.getByRole('heading', {name: 'Welcome to the-internet'})).toBeVisible();
+    await page.getByRole('link', {name: 'JavaScript Alerts'}).click();
+    await expect(page.getByRole('heading', {name: 'JavaScript Alerts'})).toBeVisible();
+
+    page.once('dialog', async dialog=> {
+        console.log("dialog type is:", dialog.type());
+        expect(dialog.type()).toBe('alert');
+        console.log("dialog message is:", dialog.message());
+        expect(dialog.message()).toBe('I am a JS Alert');
+    await dialog.accept()});
+    await page.getByRole('button', {name: 'Click for JS Alert'}).click();
+    await expect(page.getByText('You successfully clicked an alert')).toBeVisible();
+
 });
 
