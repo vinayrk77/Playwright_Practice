@@ -173,12 +173,12 @@ test("find the produc name and add to cart", async ({ page }) => {
     expect(actualProducts).toEqual(productsToAdd);
 });
 
-async function addProductToCart(page:Page, productName: string):Promise<void>{
+async function addProductToCart(page: Page, productName: string): Promise<void> {
     const product = page.locator('.inventory_item');
-    const searchProducts = product.filter({hasText: productName});
+    const searchProducts = product.filter({ hasText: productName });
     await searchProducts.getByRole('button', { name: 'Add to cart' }).click();
 }
-test("Use function to search product and add it to cart", async({page})=>{
+test("Use function to search product and add it to cart", async ({ page }) => {
     await page.goto("https://www.saucedemo.com/");
     await expect(page).toHaveTitle('Swag Labs');
 
@@ -191,7 +191,7 @@ test("Use function to search product and add it to cart", async({page})=>{
         'Sauce Labs Fleece Jacket',
         'Sauce Labs Bolt T-Shirt'];
 
-    for(const productName of productsToAdd){
+    for (const productName of productsToAdd) {
         await addProductToCart(page, productName);
     }
     await expect(page.locator('.shopping_cart_badge')).toHaveText('3');
@@ -203,7 +203,7 @@ test("Use function to search product and add it to cart", async({page})=>{
     expect(actualProducts).toEqual(productsToAdd);
 });
 
-test("Verify and print all product names", async({page})=>{
+test("Verify and print all product names", async ({ page }) => {
 
     await page.goto('https://www.saucedemo.com/');
     await expect(page).toHaveTitle('Swag Labs');
@@ -227,19 +227,19 @@ test("Verify and print all product names", async({page})=>{
     expect(lastProduct).toBe('Test.allTheThings() T-Shirt (Red)');
 });
 
-test("Verify dynamic controls", async({page})=>{
+test("Verify dynamic controls", async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/dynamic_controls');
-    await expect(page.getByRole('heading', {name: 'Dynamic Controls'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Dynamic Controls' })).toBeVisible();
 
-    const removeButton = page.getByRole('button', {name: 'Remove'});
+    const removeButton = page.getByRole('button', { name: 'Remove' });
     await expect(removeButton).toBeVisible();
     await removeButton.click();
     await expect(removeButton).not.toBeVisible();
-    const checkBox= page.locator('#checkbox');
+    const checkBox = page.locator('#checkbox');
     await expect(checkBox).not.toBeVisible();
     await expect(page.locator('#message')).toHaveText("It's gone!");
 
-    const addButton = page.getByRole('button', {name: 'Add'});
+    const addButton = page.getByRole('button', { name: 'Add' });
     await expect(addButton).toBeVisible();
     await addButton.click();
     await expect(checkBox).toBeVisible();
@@ -248,11 +248,11 @@ test("Verify dynamic controls", async({page})=>{
     await expect(checkBox).toBeChecked();
 });
 
-test("Verify dynamic controls for checkboxes", async({page})=>{
+test("Verify dynamic controls for checkboxes", async ({ page }) => {
 
     await page.goto("https://the-internet.herokuapp.com/checkboxes");
 
-    await expect(page.getByRole('heading', {name: 'Checkboxes'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Checkboxes' })).toBeVisible();
     const checkboxes = page.getByRole('checkbox');
     console.log(await checkboxes.count());
     await expect(checkboxes).toHaveCount(2);
@@ -266,10 +266,10 @@ test("Verify dynamic controls for checkboxes", async({page})=>{
     await expect(checkboxes.nth(1)).not.toBeChecked();
 });
 
-test("Verify Dropdowns", async({page})=>{
+test("Verify Dropdowns", async ({ page }) => {
 
     await page.goto("https://the-internet.herokuapp.com/dropdown");
-    await expect(page.getByRole('heading', {name: 'Dropdown List'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Dropdown List' })).toBeVisible();
 
     const dropDown = page.locator('select#dropdown');
     await expect(dropDown).toBeVisible();
@@ -281,21 +281,83 @@ test("Verify Dropdowns", async({page})=>{
     await expect(dropDown).toHaveValue('2');
 });
 
-test.only('verify Product Purchase Flow + Dialog', async({page})=>{
+test('verify Product Purchase Flow + Dialog', async ({ page }) => {
 
     await page.goto('https://the-internet.herokuapp.com/');
-    await expect(page.getByRole('heading', {name: 'Welcome to the-internet'})).toBeVisible();
-    await page.getByRole('link', {name: 'JavaScript Alerts'}).click();
-    await expect(page.getByRole('heading', {name: 'JavaScript Alerts'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome to the-internet' })).toBeVisible();
+    await page.getByRole('link', { name: 'JavaScript Alerts' }).click();
+    await expect(page.getByRole('heading', { name: 'JavaScript Alerts' })).toBeVisible();
 
-    page.once('dialog', async dialog=> {
+    page.once('dialog', async dialog => {
         console.log("dialog type is:", dialog.type());
         expect(dialog.type()).toBe('alert');
         console.log("dialog message is:", dialog.message());
         expect(dialog.message()).toBe('I am a JS Alert');
-    await dialog.accept()});
-    await page.getByRole('button', {name: 'Click for JS Alert'}).click();
+        await dialog.accept()
+    });
+    await page.getByRole('button', { name: 'Click for JS Alert' }).click();
     await expect(page.getByText('You successfully clicked an alert')).toBeVisible();
+
+    page.once('dialog', async dialog => {
+        console.log("Dialog type is:", dialog.type());
+        expect(dialog.type()).toBe('confirm');
+        console.log("dialog message is:", dialog.message());
+        expect(dialog.message()).toBe('I am a JS Confirm');
+        await dialog.accept()
+    });
+    await page.getByRole('button', { name: 'Click for JS Confirm' }).click();
+    await expect(page.getByText('You clicked: Ok')).toBeVisible();
+
+    page.once('dialog', async dialog=>{
+        console.log("Dialog type is:", dialog.type());
+        expect(dialog.type()).toBe('confirm');
+        await dialog.dismiss();
+    });
+    await page.getByRole('button', { name: 'Click for JS Confirm' }).click();
+    await expect(page.getByText('You clicked: Cancel')).toBeVisible();
+
+    page.once('dialog', async dialog=>{
+        console.log('Dialog type is:', dialog.type());
+        expect(dialog.type()).toBe('prompt');
+        console.log("Dialog text is:", dialog.message());
+        expect(dialog.message()).toBe('I am a JS prompt');
+        await dialog.accept('Vinay will master Playwright and thats a promise to myself');
+    });
+    await page.getByRole('button', { name: 'Click for JS Prompt' }).click();
+    await expect(page.getByText('You entered: Vinay will master Playwright and thats a promise to myself')).toBeVisible();
+});
+
+test.only('verify tables and rows', async({page})=>{
+
+    await page.goto('https://the-internet.herokuapp.com/tables');
+    await expect(page.getByRole('heading', {name: 'Data Tables'})).toBeVisible();
+
+    const table1 = page.locator('#table1 tbody');
+    expect(table1).toBeVisible();
+    const tableRow = table1.locator('tr');
+
+    const jasonRow = tableRow.filter({ hasText: 'Jason' });
+    const jasonRowText = await jasonRow.innerText();
+    console.log(jasonRowText);
+    const lastName = await jasonRow.locator('td').nth(0).innerText();
+    console.log(lastName);
+    expect(lastName).toBe('Doe');
+    const firstName = await jasonRow.locator('td').nth(1).innerText();
+    console.log(firstName);
+    expect(firstName).toBe('Jason');
+    const email = await jasonRow.locator('td').nth(2).innerText();
+    console.log(email);
+    expect(email).toBe('jdoe@hotmail.com');
+    const due = await jasonRow.locator('td').nth(3).innerText();
+    console.log(due);
+    expect(due).toBe('$100.00');
+
+    const allRow = await tableRow.all();
+    for(let allData of allRow){
+        const names = await allData.locator('td').nth(1).innerText();
+        console.log(names);
+    }
+    
 
 });
 
