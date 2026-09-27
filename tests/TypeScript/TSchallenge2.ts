@@ -70,3 +70,4 @@ if(rev1 === originalNumber){
 }else{
     console.log(originalNumber, "is not a bloody palindrome");
 }
+

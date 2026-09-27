@@ -308,7 +308,7 @@ test('verify Product Purchase Flow + Dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'Click for JS Confirm' }).click();
     await expect(page.getByText('You clicked: Ok')).toBeVisible();
 
-    page.once('dialog', async dialog=>{
+    page.once('dialog', async dialog => {
         console.log("Dialog type is:", dialog.type());
         expect(dialog.type()).toBe('confirm');
         await dialog.dismiss();
@@ -316,7 +316,7 @@ test('verify Product Purchase Flow + Dialog', async ({ page }) => {
     await page.getByRole('button', { name: 'Click for JS Confirm' }).click();
     await expect(page.getByText('You clicked: Cancel')).toBeVisible();
 
-    page.once('dialog', async dialog=>{
+    page.once('dialog', async dialog => {
         console.log('Dialog type is:', dialog.type());
         expect(dialog.type()).toBe('prompt');
         console.log("Dialog text is:", dialog.message());
@@ -327,10 +327,10 @@ test('verify Product Purchase Flow + Dialog', async ({ page }) => {
     await expect(page.getByText('You entered: Vinay will master Playwright and thats a promise to myself')).toBeVisible();
 });
 
-test.only('verify tables and rows', async({page})=>{
+test('verify tables and rows', async ({ page }) => {
 
     await page.goto('https://the-internet.herokuapp.com/tables');
-    await expect(page.getByRole('heading', {name: 'Data Tables'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Data Tables' })).toBeVisible();
 
     const table1 = page.locator('#table1 tbody');
     expect(table1).toBeVisible();
@@ -353,11 +353,98 @@ test.only('verify tables and rows', async({page})=>{
     expect(due).toBe('$100.00');
 
     const allRow = await tableRow.all();
-    for(let allData of allRow){
+    for (let allData of allRow) {
         const names = await allData.locator('td').nth(1).innerText();
         console.log(names);
     }
-    
+
+    let total = 0;
+    for (const allDue of allRow) {
+        const dueValue = await allDue.locator('td').nth(3).innerText();
+        console.log(dueValue);
+        total += Number(dueValue.replace('$', ''));
+    }
+    console.log(total);
+});
+
+test("Verify books written by Richard E. Silverman", async ({ page }) => {
+    await page.goto('https://demoqa.com/books');
+    await expect(page).toHaveTitle('demosite');
+
+    const searchBox = page.getByPlaceholder('Type to search');
+    await expect(searchBox).toBeVisible();
+    await searchBox.fill('Git Pocket Guide');
+
+    const table = page.locator('table tbody tr');
+    const bookName = table.locator('td').filter({ hasText: 'Git Pocket Guide' });
+    await expect(bookName).toBeVisible();
+    const authorName = table.locator('td').filter({ hasText: 'Richard E. Silverman' });
+    await expect(authorName).toBeVisible();
+
+    await searchBox.clear();
+    await searchBox.fill('JavaScript');
+
+    const table1 = page.locator('table tbody tr');
+    const allData = await table1.all();
+
+    for (let i = 0; i < allData.length; i++) {
+        const title = await allData[i].locator('td').nth(1).innerText();
+        const author = await allData[i].locator('td').nth(2).innerText();
+        console.log(`Book ${i + 1}: ${title}`);
+        console.log(`Author: ${author}`);
+        expect(title).toContain('JavaScript');
+    }
+
+    await table1.locator('td').filter({hasText: 'Learning JavaScript Design Patterns'}).click();
+    await expect(page.getByRole('heading', {name: 'Book Store'})).toBeVisible();
+    await expect(page.getByText('Learning JavaScript Design Patterns').first()).toBeVisible();
+    await expect(page.getByText('Addy Osmani')).toBeVisible();
+    await page.getByRole('button', {name: 'Back To Book Store'}).click();
+    await expect(page).toHaveURL('https://demoqa.com/books');
+    await expect(page.locator('table tbody')).toBeVisible();
+});
+
+test.only("Book the cheapest flight", async({page})=>{
+    await page.goto('https://blazedemo.com/');
+    await expect(page.getByRole('heading', { name: 'Welcome to the Simple Travel Agency!' })).toBeVisible();
+
+    const departure = page.locator('select[name="fromPort"]');
+    await departure.click();
+    await departure.selectOption('Boston');
+    expect(departure).toHaveValue('Boston');
+
+    const destination = page.locator('select[name="toPort"]');
+    await destination.click();
+    await destination.selectOption('London');
+    expect(destination).toHaveValue('London');
+
+    await page.locator('input[value="Find Flights"]').click();
+
+    await expect(page.getByRole('heading', {name: 'Flights from Boston to London:'})).toBeVisible();
+
+    const allFlights = page.locator('.table tbody tr');
+    console.log("Total Number of Flights are: ",await allFlights.count());
+    await expect(allFlights).toHaveCount(5);
+    await expect(allFlights).not.toHaveCount(0);
+
+    const flightDetails = await allFlights.all();
+    const prices: number[] = [];
+
+    for(let details of flightDetails){
+        prices.push(Number((await details.locator('td').nth(5).innerText()).replace('$', '')));
+    }
+    console.log(prices);
+
+    let lowertPrice = Infinity;
+    for(let cheap of prices){
+        if(cheap < lowertPrice){
+            lowertPrice = cheap;
+        }
+    }
+    console.log(lowertPrice);
+
+
+
 
 });
 
