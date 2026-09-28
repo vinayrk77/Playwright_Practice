@@ -435,13 +435,18 @@ test.only("Book the cheapest flight", async({page})=>{
     }
     console.log(prices);
 
-    let lowertPrice = Infinity;
+    let lowertPrice = prices[0];
     for(let cheap of prices){
         if(cheap < lowertPrice){
             lowertPrice = cheap;
         }
     }
-    console.log(lowertPrice);
+    console.log("Lowest Price", lowertPrice);
+
+    const lowestIndex = prices.indexOf(lowertPrice);
+    const cheapestFlight = flightDetails[lowestIndex];
+    await cheapestFlight.getByRole('button', {name: 'Choose This Flight'}).click();
+    
 
 
 
