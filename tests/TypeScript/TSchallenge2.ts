@@ -71,3 +71,10 @@ if(rev1 === originalNumber){
     console.log(originalNumber, "is not a bloody palindrome");
 }
 
+//Find duplicate values in an array.
+const productIds: number[] = [101, 102, 103, 101, 104, 102, 105, 101];
+console.log('Length of array is:', productIds.length);
+
+for (let i = 0; i < productIds.length; i++) {
+    console.log(productIds);
+}

@@ -404,7 +404,7 @@ test("Verify books written by Richard E. Silverman", async ({ page }) => {
     await expect(page.locator('table tbody')).toBeVisible();
 });
 
-test.only("Book the cheapest flight", async({page})=>{
+test("Book the cheapest flight", async({page})=>{
     await page.goto('https://blazedemo.com/');
     await expect(page.getByRole('heading', { name: 'Welcome to the Simple Travel Agency!' })).toBeVisible();
 
@@ -446,10 +446,21 @@ test.only("Book the cheapest flight", async({page})=>{
     const lowestIndex = prices.indexOf(lowertPrice);
     const cheapestFlight = flightDetails[lowestIndex];
     await cheapestFlight.getByRole('button', {name: 'Choose This Flight'}).click();
-    
-
-
-
-
 });
 
+
+test.only("Challenge 1 — Checkbox automation", async({page})=>{
+
+    await page.goto('https://the-internet.herokuapp.com/checkboxes');
+    await expect(page).toHaveTitle('The Internet');
+
+    const checkBoxes = page.locator('input[type="checkbox"]');
+    await expect(checkBoxes).toHaveCount(2);
+    await expect(checkBoxes.nth(0)).not.toBeChecked();
+    await expect(checkBoxes.nth(1)).toBeChecked();
+
+    await checkBoxes.nth(0).check();
+    await expect(checkBoxes.nth(0)).toBeChecked();
+    await checkBoxes.nth(1).uncheck();
+    await expect(checkBoxes.nth(1)).not.toBeChecked();
+});
