@@ -2,7 +2,7 @@
 //Write a program to calculate the sum of the first 10 natural numbers using a while loop. 
 let sum = 0;
 let i = 1;
-while(sum <=10)
+while(i <=10)
 {
     sum = sum + i;
     i = i + 1;
@@ -73,8 +73,15 @@ if(rev1 === originalNumber){
 
 //Find duplicate values in an array.
 const productIds: number[] = [101, 102, 103, 101, 104, 102, 105, 101];
-console.log('Length of array is:', productIds.length);
 
-for (let i = 0; i < productIds.length; i++) {
-    console.log(productIds);
+for (let i = 0; i < productIds.length; i++){
+    let count = 0;
+for(let j=0; j< productIds.length; j++){
+    if(productIds[i] === productIds[j]){
+        count++;
+    }
+}
+    if(count > 1){
+        console.log(productIds[i], 'occurs', count, 'times');
+    }
 }

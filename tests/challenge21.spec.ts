@@ -395,16 +395,16 @@ test("Verify books written by Richard E. Silverman", async ({ page }) => {
         expect(title).toContain('JavaScript');
     }
 
-    await table1.locator('td').filter({hasText: 'Learning JavaScript Design Patterns'}).click();
-    await expect(page.getByRole('heading', {name: 'Book Store'})).toBeVisible();
+    await table1.locator('td').filter({ hasText: 'Learning JavaScript Design Patterns' }).click();
+    await expect(page.getByRole('heading', { name: 'Book Store' })).toBeVisible();
     await expect(page.getByText('Learning JavaScript Design Patterns').first()).toBeVisible();
     await expect(page.getByText('Addy Osmani')).toBeVisible();
-    await page.getByRole('button', {name: 'Back To Book Store'}).click();
+    await page.getByRole('button', { name: 'Back To Book Store' }).click();
     await expect(page).toHaveURL('https://demoqa.com/books');
     await expect(page.locator('table tbody')).toBeVisible();
 });
 
-test("Book the cheapest flight", async({page})=>{
+test("Book the cheapest flight", async ({ page }) => {
     await page.goto('https://blazedemo.com/');
     await expect(page.getByRole('heading', { name: 'Welcome to the Simple Travel Agency!' })).toBeVisible();
 
@@ -420,24 +420,24 @@ test("Book the cheapest flight", async({page})=>{
 
     await page.locator('input[value="Find Flights"]').click();
 
-    await expect(page.getByRole('heading', {name: 'Flights from Boston to London:'})).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Flights from Boston to London:' })).toBeVisible();
 
     const allFlights = page.locator('.table tbody tr');
-    console.log("Total Number of Flights are: ",await allFlights.count());
+    console.log("Total Number of Flights are: ", await allFlights.count());
     await expect(allFlights).toHaveCount(5);
     await expect(allFlights).not.toHaveCount(0);
 
     const flightDetails = await allFlights.all();
     const prices: number[] = [];
 
-    for(let details of flightDetails){
+    for (let details of flightDetails) {
         prices.push(Number((await details.locator('td').nth(5).innerText()).replace('$', '')));
     }
     console.log(prices);
 
     let lowertPrice = prices[0];
-    for(let cheap of prices){
-        if(cheap < lowertPrice){
+    for (let cheap of prices) {
+        if (cheap < lowertPrice) {
             lowertPrice = cheap;
         }
     }
@@ -445,11 +445,11 @@ test("Book the cheapest flight", async({page})=>{
 
     const lowestIndex = prices.indexOf(lowertPrice);
     const cheapestFlight = flightDetails[lowestIndex];
-    await cheapestFlight.getByRole('button', {name: 'Choose This Flight'}).click();
+    await cheapestFlight.getByRole('button', { name: 'Choose This Flight' }).click();
 });
 
 
-test.only("Challenge 1 — Checkbox automation", async({page})=>{
+test("Challenge 1 — Checkbox automation", async ({ page }) => {
 
     await page.goto('https://the-internet.herokuapp.com/checkboxes');
     await expect(page).toHaveTitle('The Internet');
@@ -463,4 +463,21 @@ test.only("Challenge 1 — Checkbox automation", async({page})=>{
     await expect(checkBoxes.nth(0)).toBeChecked();
     await checkBoxes.nth(1).uncheck();
     await expect(checkBoxes.nth(1)).not.toBeChecked();
+});
+
+test.only('check number of dropdowns', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/dropdown');
+    await expect(page).toHaveTitle('The Internet');
+    const dropdown = page.locator('#dropdown');
+    const options = dropdown.locator('option');
+    await expect(dropdown).toBeVisible();
+    await expect(dropdown).toBeEnabled();
+
+    await expect(options).toHaveCount(3);
+    await expect(options).toHaveText(['Please select an option','Option 1','Option 2']);
+    await expect(dropdown.locator('option:checked')).toHaveText('Please select an option');
+    await dropdown.selectOption('1');
+    await expect(dropdown).toHaveValue('1');
+    await dropdown.selectOption('2');
+    await expect(dropdown).toHaveValue('2');
 });
