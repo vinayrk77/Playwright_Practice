@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import * as fs from 'node:fs';
 
 
 async function addToCart(page: Page, productName: string): Promise<void> {
@@ -465,7 +466,7 @@ test("Challenge 1 — Checkbox automation", async ({ page }) => {
     await expect(checkBoxes.nth(1)).not.toBeChecked();
 });
 
-test.only('check number of dropdowns', async ({ page }) => {
+test('check number of dropdowns', async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/dropdown');
     await expect(page).toHaveTitle('The Internet');
     const dropdown = page.locator('#dropdown');
@@ -481,3 +482,31 @@ test.only('check number of dropdowns', async ({ page }) => {
     await dropdown.selectOption('2');
     await expect(dropdown).toHaveValue('2');
 });
+
+test("Verify File downloads", async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/download');
+    await expect(page).toHaveTitle('The Internet');
+
+    const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('link', {name: 'AlgoTest_Conversation.docx'}).click()]);
+
+    const customPath = 'downloads/AlgoTest_Conversation.docx';
+    await download.saveAs(customPath);
+
+    const fileExists:boolean = fs.existsSync(customPath);
+    expect(fileExists).toBeTruthy();
+    if(fileExists){
+        fs.unlinkSync(customPath);
+    }
+});
+
+test.only('Verify and hndel multiple window', async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/windows');
+    await expect(page).toHaveTitle('The Internet');
+
+    const [window] = await Promise.all([page.waitForEvent('popup'), page.getByRole('link', {name: 'Click Here'}).click()]);
+
+    await expect(window).toHaveTitle('New Window');
+    await expect(page.getByRole('heading', {name: 'New Window'})).toBeVisible();
+    await expect(page).toHaveURL('https://the-internet.herokuapp.com/windows');
+});
+

@@ -85,3 +85,34 @@ for(let j=0; j< productIds.length; j++){
         console.log(productIds[i], 'occurs', count, 'times');
     }
 }
+
+//Find the largest number in an array.
+const numbers: number[] = [12, 45, 7, 89, 23, 56];
+let largest = 0;
+for(let i=0; i<numbers.length; i++){
+    if(largest < numbers[i]){
+        largest = numbers[i];
+    }
+}
+console.log("Largest number is: ", largest);
+
+//Find the smallest number in an array.
+const numbers1: number[] = [34, 12, 67, 5, 29, 18];
+let smallest = numbers1[0];
+for(let i=1; i<numbers1.length; i++){
+    if(smallest > numbers1[i]){
+        smallest = numbers1[i];
+    }
+}
+console.log("Smallest Number is: ", smallest);
+
+//Write a program to count how many numbers are greater than or equal to 60
+const scores: number[] = [45, 80, 32, 90, 67, 80, 55];
+let count = 0;
+for(let i=0; i<scores.length; i++){
+    if(scores[i] >= 60){
+        count++
+    }
+}
+console.log('Number of passing scores:', count);
+
