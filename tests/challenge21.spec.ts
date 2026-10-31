@@ -499,7 +499,7 @@ test("Verify File downloads", async({page})=>{
     }
 });
 
-test.only('Verify and hndel multiple window', async({page})=>{
+test('Verify and hndel multiple window', async({page})=>{
     await page.goto('https://the-internet.herokuapp.com/windows');
     await expect(page).toHaveTitle('The Internet');
 
@@ -508,5 +508,44 @@ test.only('Verify and hndel multiple window', async({page})=>{
     await expect(window).toHaveTitle('New Window');
     await expect(page.getByRole('heading', {name: 'New Window'})).toBeVisible();
     await expect(page).toHaveURL('https://the-internet.herokuapp.com/windows');
+});
+
+test("Verify and handel frames", async({page})=>{
+    await page.goto("https://the-internet.herokuapp.com/iframe");
+    await expect(page).toHaveTitle('The Internet');
+    const frame = page.frameLocator('#mce_0_ifr');
+    const editor = frame.locator('#tinymce p');
+    await expect(editor).toBeVisible();
+    await editor.hover()
+    await editor.click();
+    await editor.press('Control+A');
+    await editor.press('Backspace');
+    await editor.fill('Playwright TypeScript Practice');
+    await expect(editor).toHaveText('Playwright TypeScript Practice');
+    await expect(page).toHaveURL('https://the-internet.herokuapp.com/iframe');
+});
+
+test.only('Playwright: Data-driven login testing', async({page})=>{
+
+    const loginData = [
+    {username: 'tomsmith',password: 'SuperSecretPassword!',expectedMessage: 'Secure Area'},
+    {username: 'wronguser',password: 'SuperSecretPassword!',expectedMessage: 'Your username is invalid!'},
+    {username: 'tomsmith',password: 'wrongpassword',expectedMessage: 'Your password is invalid!'}];
+
+    for(const data of loginData){
+        await page.goto('https://the-internet.herokuapp.com/login');
+        await expect(page).toHaveTitle('The Internet');
+        await page.locator('#username').fill(data.username);
+        await page.locator('#password').fill(data.password);
+        await page.getByRole('button', {name: 'Login'}).click();
+
+        if (data.expectedMessage === 'Secure Area'){
+            await expect(page.getByRole('heading', {name: data.expectedMessage, level: 2})).toBeVisible();
+            await expect(page.getByRole('link', {name: 'Logout'})).toBeVisible();
+        } else {
+            await expect(page.locator('#flash')).toContainText(data.expectedMessage);
+        }
+    }
+
 });
 

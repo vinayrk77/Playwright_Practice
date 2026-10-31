@@ -116,3 +116,22 @@ for(let i=0; i<scores.length; i++){
 }
 console.log('Number of passing scores:', count);
 
+//Problem: Calculate the sum of all even numbers in an array.
+
+const Evenumbers: number[] = [12, 7, 8, 15, 20, 3, 6];
+let sum1 = 0;
+for(let i=0; i<Evenumbers.length; i++){
+    if(Evenumbers[i] % 2 === 0){
+        sum1 = sum1 + Evenumbers[i];
+    }
+}
+console.log("Sum of even numbers: ", sum1);
+
+//Write a program to reverse the string using a basic for loop.
+const OGword: string = 'Playwright';
+let reverse:string = '';
+for(let i=OGword.length-1; i>=0; i--){
+        reverse = reverse + OGword[i];
+}
+console.log("Reverse of string is:", reverse);
+
