@@ -525,7 +525,7 @@ test("Verify and handel frames", async({page})=>{
     await expect(page).toHaveURL('https://the-internet.herokuapp.com/iframe');
 });
 
-test.only('Playwright: Data-driven login testing', async({page})=>{
+test('Playwright: Data-driven login testing', async({page})=>{
 
     const loginData = [
     {username: 'tomsmith',password: 'SuperSecretPassword!',expectedMessage: 'Secure Area'},
@@ -546,6 +546,16 @@ test.only('Playwright: Data-driven login testing', async({page})=>{
             await expect(page.locator('#flash')).toContainText(data.expectedMessage);
         }
     }
+});
 
+test.only("Verify file upload", async({page})=>{
+    await page.goto('https://the-internet.herokuapp.com/upload');
+    await expect(page).toHaveTitle('The Internet');
+    await page.locator('#file-upload').setInputFiles('uploads/Day28-dialogs+and+frames.pdf');
+    await page.locator('#file-submit').click();
+    await expect(page.getByRole('heading', {name: 'File Uploaded!'})).toBeVisible();
+    const fileName = await page.locator('#uploaded-files').textContent();
+    console.log("Name of file is:", fileName);
+    expect(fileName).toContain('Day28-dialogs+and+frames.pdf');
 });
 

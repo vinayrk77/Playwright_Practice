@@ -135,3 +135,15 @@ for(let i=OGword.length-1; i>=0; i--){
 }
 console.log("Reverse of string is:", reverse);
 
+//Count how many numbers are greater than 10 and their sum.
+const number: number[] = [12, 5, 18, 7, 24, 9, 30, 11];
+let count1 = 0;
+let sum2 = 0;
+for(let i=0; i<number.length; i++){
+    if(number[i] > 10){
+        count1++;
+        sum2 = sum2 + number[i];
+    }
+}
+console.log('Numbers greater than 10 are:',count1);
+console.log("Sum of numbers greater than 10:", sum2);
