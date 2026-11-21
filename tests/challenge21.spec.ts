@@ -548,7 +548,7 @@ test('Playwright: Data-driven login testing', async({page})=>{
     }
 });
 
-test.only("Verify file upload", async({page})=>{
+test("Verify file upload", async({page})=>{
     await page.goto('https://the-internet.herokuapp.com/upload');
     await expect(page).toHaveTitle('The Internet');
     await page.locator('#file-upload').setInputFiles('uploads/Day28-dialogs+and+frames.pdf');
@@ -558,4 +558,28 @@ test.only("Verify file upload", async({page})=>{
     console.log("Name of file is:", fileName);
     expect(fileName).toContain('Day28-dialogs+and+frames.pdf');
 });
+
+test.only("Add products to cart", async({page})=>{
+    await page.goto('https://www.automationexercise.com/');
+    await expect(page.getByRole('link', {name: 'Home'})).toBeVisible();
+    await page.getByRole('link', {name: 'Products'}).click();
+    await expect(page).toHaveURL('https://www.automationexercise.com/products');
+    await page.getByPlaceholder('Search Product').fill('Dress');
+    await page.locator('#submit_search').click();
+    await expect(page.getByRole('heading', {name: 'Searched Products'})).toBeVisible();
+
+    const product = page.locator('.col-sm-4');
+    const productNames = await product.locator('.product-overlay p').allInnerTexts();
+    console.log(productNames);
+    expect(await product.count()).toBeGreaterThan(0);
+
+    const firstProduct = page.locator('.overlay-content').filter({hasText: 'Sleeveless Dress'});
+    await firstProduct.hover();
+    firstProduct.locator('.product-overlay a i').filter({hasText: 'Add to cart'}).click();
+
+
+
+});
+
+
 
